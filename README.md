@@ -116,72 +116,67 @@ Menampung data barang koleksi perhiasan antik dengan atribut spesifik material f
 ```
 ```mermaid
 flowchart TD
-    Start([Start Program]) --> InitData[Inisialisasi & Load Dummy Data ke ArrayList]
-    
-    InitData --> DisplayMenu[\Tampilkan Menu Utama:<br/>1. Tambah Barang<br/>2. Tampilkan Semua Barang<br/>3. Cari Barang berdasarkan ID<br/>4. Update Barang<br/>5. Hapus Barang<br/>6. Keluar/]
-    
-    DisplayMenu --> ReadInput[/Input Pilihan Menu 1-6/]
-    ReadInput --> ValidateInput[Validasi Input via Validator]
-    
-    ValidateInput --> MenuDecision{Pilihan Menu?}
+    %% Inisialisasi
+    Start([Start Program]) --> LoadData[Load Pre-defined Dummy Data ke ArrayList]
+    LoadData --> MenuJunction(( ))
 
-    %% Cabang Menu 1: Tambah
-    MenuDecision -->|1| Menu1_Select[/Pilih Jenis Barang:<br/>1. Barang Antik<br/>2. Perhiasan/]
-    Menu1_Select --> Menu1_Input[/Input Atribut Umum & Atribut Spesifik Subclass/]
-    Menu1_Input --> Menu1_Process[Instansiasi Objek Subclass & Simpan ke ArrayList]
-    Menu1_Process --> Menu1_Msg[\Tampilkan Pesan: Data Berhasil Ditambahkan/]
-    Menu1_Msg --> ReturnMenu
+    %% Menu Utama
+    MenuJunction --> ShowMenu[/Tampilkan Menu Utama:<br/>1. Tambah Barang<br/>2. Tampilkan Semua Barang<br/>3. Cari Barang berdasarkan ID<br/>4. Update Barang<br/>5. Hapus Barang<br/>6. Keluar/]
+    ShowMenu --> ReadMenu[/Input Pilihan Menu 1-6/]
+    ReadMenu --> CheckMenu{Pilihan Menu?}
 
-    %% Cabang Menu 2: Read
-    MenuDecision -->|2| Menu2_Process[Ambil Semua Data dari ArrayList]
-    Menu2_Process --> Menu2_Display[\Tampilkan Data Barang dalam Format Tabel/]
-    Menu2_Display --> ReturnMenu
+    %% Fitur 1: Tambah
+    CheckMenu -->|1| M1_Select[/Input Jenis Barang:<br/>1. Barang Antik<br/>2. Perhiasan/]
+    M1_Select --> M1_Input[/Input Atribut Umum & Atribut Spesifik Subclass/]
+    M1_Input --> M1_Process[Instansiasi Objek Subclass & Tambah ke ArrayList]
+    M1_Process --> M1_Print[/Tampilkan Pesan: Data Berhasil Ditambahkan/]
+    M1_Print --> MenuJunction
 
-    %% Cabang Menu 3: Search
-    MenuDecision -->|3| Menu3_Input[/Input ID Barang/]
-    Menu3_Input --> Menu3_Search[Cari Objek Barang berdasarkan ID dalam ArrayList]
-    Menu3_Search --> Menu3_Check{Barang Ditemukan?}
-    Menu3_Check -->|Ya| Menu3_Show[\Tampilkan Rincian Detail Barang/]
-    Menu3_Check -->|Tidak| Menu3_NotFound[\Tampilkan Pesan: ID Tidak Ditemukan/]
-    Menu3_Show --> ReturnMenu
-    Menu3_NotFound --> ReturnMenu
+    %% Fitur 2: Tampilkan
+    CheckMenu -->|2| M2_Fetch[Ambil Seluruh Data Objek dari ArrayList]
+    M2_Fetch --> M2_Print[/Tampilkan Daftar Barang dalam Format Tabel/]
+    M2_Print --> MenuJunction
 
-    %% Cabang Menu 4: Update
-    MenuDecision -->|4| Menu4_Input[/Input ID Barang yang Ingin Diupdate/]
-    Menu4_Input --> Menu4_Search[Cari Objek Barang berdasarkan ID]
-    Menu4_Search --> Menu4_Check{Barang Ditemukan?}
-    Menu4_Check -->|Ya| Menu4_NewData[/Input Data & Atribut Baru/]
-    Menu4_NewData --> Menu4_UpdateProcess[Perbarui Nilai Atribut via Setter/]
-    Menu4_UpdateProcess --> Menu4_Msg[\Tampilkan Pesan: Data Berhasil Diupdate/]
-    Menu4_Check -->|Tidak| Menu4_NotFound[\Tampilkan Pesan: ID Tidak Ditemukan/]
-    Menu4_Msg --> ReturnMenu
-    Menu4_NotFound --> ReturnMenu
+    %% Fitur 3: Cari
+    CheckMenu -->|3| M3_Input[/Input ID Barang/]
+    M3_Input --> M3_Search[Cari Objek berdasarkan ID pada ArrayList]
+    M3_Search --> M3_Check{Barang Ditemukan?}
+    M3_Check -->|Ya| M3_PrintSuccess[/Tampilkan Rincian Detail Barang/]
+    M3_Check -->|Tidak| M3_PrintFail[/Tampilkan Pesan: ID Tidak Ditemukan/]
+    M3_PrintSuccess --> MenuJunction
+    M3_PrintFail --> MenuJunction
 
-    %% Cabang Menu 5: Delete
-    MenuDecision -->|5| Menu5_Input[/Input ID Barang yang Ingin Dihapus/]
-    Menu5_Input --> Menu5_Search[Cari Objek Barang berdasarkan ID]
-    Menu5_Search --> Menu5_Check{Barang Ditemukan?}
-    Menu5_Check -->|Ya| Menu5_Confirm[/Input Konfirmasi Penghapusan y/n/]
-    Menu5_Confirm --> Menu5_ConfirmCheck{Konfirmasi 'y'?}
-    Menu5_ConfirmCheck -->|Ya| Menu5_DeleteProcess[Hapus Objek Barang dari ArrayList]
-    Menu5_DeleteProcess --> Menu5_Msg[\Tampilkan Pesan: Barang Berhasil Dihapus/]
-    Menu5_ConfirmCheck -->|Tidak| Menu5_Cancel[\Tampilkan Pesan: Penghapusan Dibatalkan/]
-    Menu5_Check -->|Tidak| Menu5_NotFound[\Tampilkan Pesan: ID Tidak Ditemukan/]
-    Menu5_Msg --> ReturnMenu
-    Menu5_Cancel --> ReturnMenu
-    Menu5_NotFound --> ReturnMenu
+    %% Fitur 4: Update
+    CheckMenu -->|4| M4_InputID[/Input ID Barang yang Ingin Diupdate/]
+    M4_InputID --> M4_Search[Cari Objek berdasarkan ID pada ArrayList]
+    M4_Search --> M4_Check{Barang Ditemukan?}
+    M4_Check -->|Ya| M4_InputData[/Input Data Atribut Baru/]
+    M4_InputData --> M4_Update[Update Nilai Atribut Objek via Setter/]
+    M4_Update --> M4_PrintSuccess[/Tampilkan Pesan: Data Berhasil Diupdate/]
+    M4_Check -->|Tidak| M4_PrintFail[/Tampilkan Pesan: ID Tidak Ditemukan/]
+    M4_PrintSuccess --> MenuJunction
+    M4_PrintFail --> MenuJunction
 
-    %% Cabang Input Salah
-    MenuDecision -->|Pilihan Invalid| InvalidMsg[\Tampilkan Pesan Error: Pilihan Menu Tidak Valid/]
-    InvalidMsg --> ReturnMenu
+    %% Fitur 5: Hapus
+    CheckMenu -->|5| M5_InputID[/Input ID Barang yang Ingin Dihapus/]
+    M5_InputID --> M5_Search[Cari Objek berdasarkan ID pada ArrayList]
+    M5_Search --> M5_Check{Barang Ditemukan?}
+    M5_Check -->|Ya| M5_Confirm[/Input Konfirmasi Penghapusan y/n/]
+    M5_Confirm --> M5_ConfirmCheck{Konfirmasi 'y'?}
+    M5_ConfirmCheck -->|Ya| M5_Delete[Hapus Objek dari ArrayList]
+    M5_Delete --> M5_PrintSuccess[/Tampilkan Pesan: Data Berhasil Dihapus/]
+    M5_ConfirmCheck -->|Tidak| M5_PrintCancel[/Tampilkan Pesan: Penghapusan Dibatalkan/]
+    M5_Check -->|Tidak| M5_PrintFail[/Tampilkan Pesan: ID Tidak Ditemukan/]
+    M5_PrintSuccess --> MenuJunction
+    M5_PrintCancel --> MenuJunction
+    M5_PrintFail --> MenuJunction
 
-    %% Cabang Exit / Selesai
-    MenuDecision -->|6| ExitMsg[\Tampilkan Pesan: Terima Kasih, Program Selesai/]
-    ExitMsg --> EndProgram([End Program])
+    %% Exception Handling & Exit
+    CheckMenu -->|Pilihan Invalid| MErr_Print[/Tampilkan Pesan Error: Pilihan Tidak Valid/]
+    MErr_Print --> MenuJunction
 
-    %% Penghubung Loop Kembali ke Menu Utama
-    ReturnMenu[ ]
-    ReturnMenu --> DisplayMenu
+    CheckMenu -->|6| M6_Print[/Tampilkan Pesan: Terima Kasih, Program Selesai/]
+    M6_Print --> End([End Program])
 ```
 
 1. **Inisialisasi Data (`Read Pre-loaded Data`)** :
