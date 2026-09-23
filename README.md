@@ -116,19 +116,72 @@ Menampung data barang koleksi perhiasan antik dengan atribut spesifik material f
 ```
 ```mermaid
 flowchart TD
-    Start([Start Program]) --> LoadData[Load Pre-defined Dummy Data ArrayList]
-    LoadData --> ShowMenu[\Tampilkan Menu Utama<br/>1. Tambah | 2. Tampilkan | 3. Cari<br/>4. Update | 5. Hapus | 6. Keluar/]
-    ShowMenu --> InputMenu[/Input Pilihan Menu / Validator/]
+    Start([Start Program]) --> InitData[Inisialisasi & Load Dummy Data ke ArrayList]
     
-    InputMenu --> CheckMenu{Pilihan Menu?}
+    InitData --> DisplayMenu[\Tampilkan Menu Utama:<br/>1. Tambah Barang<br/>2. Tampilkan Semua Barang<br/>3. Cari Barang berdasarkan ID<br/>4. Update Barang<br/>5. Hapus Barang<br/>6. Keluar/]
     
-    CheckMenu -->|Pilihan 1 - 5| ExecFitur[Eksekusi Fitur CRUD]
-    ExecFitur --> ShowMenu
+    DisplayMenu --> ReadInput[/Input Pilihan Menu 1-6/]
+    ReadInput --> ValidateInput[Validasi Input via Validator]
     
-    CheckMenu -->|Pilihan 6| Selesai([Selesai / Exit Program])
-    
-    CheckMenu -->|Input Salah| ErrMsg[\Pesan Input Salah/]
-    ErrMsg --> ShowMenu
+    ValidateInput --> MenuDecision{Pilihan Menu?}
+
+    %% Cabang Menu 1: Tambah
+    MenuDecision -->|1| Menu1_Select[/Pilih Jenis Barang:<br/>1. Barang Antik<br/>2. Perhiasan/]
+    Menu1_Select --> Menu1_Input[/Input Atribut Umum & Atribut Spesifik Subclass/]
+    Menu1_Input --> Menu1_Process[Instansiasi Objek Subclass & Simpan ke ArrayList]
+    Menu1_Process --> Menu1_Msg[\Tampilkan Pesan: Data Berhasil Ditambahkan/]
+    Menu1_Msg --> ReturnMenu
+
+    %% Cabang Menu 2: Read
+    MenuDecision -->|2| Menu2_Process[Ambil Semua Data dari ArrayList]
+    Menu2_Process --> Menu2_Display[\Tampilkan Data Barang dalam Format Tabel/]
+    Menu2_Display --> ReturnMenu
+
+    %% Cabang Menu 3: Search
+    MenuDecision -->|3| Menu3_Input[/Input ID Barang/]
+    Menu3_Input --> Menu3_Search[Cari Objek Barang berdasarkan ID dalam ArrayList]
+    Menu3_Search --> Menu3_Check{Barang Ditemukan?}
+    Menu3_Check -->|Ya| Menu3_Show[\Tampilkan Rincian Detail Barang/]
+    Menu3_Check -->|Tidak| Menu3_NotFound[\Tampilkan Pesan: ID Tidak Ditemukan/]
+    Menu3_Show --> ReturnMenu
+    Menu3_NotFound --> ReturnMenu
+
+    %% Cabang Menu 4: Update
+    MenuDecision -->|4| Menu4_Input[/Input ID Barang yang Ingin Diupdate/]
+    Menu4_Input --> Menu4_Search[Cari Objek Barang berdasarkan ID]
+    Menu4_Search --> Menu4_Check{Barang Ditemukan?}
+    Menu4_Check -->|Ya| Menu4_NewData[/Input Data & Atribut Baru/]
+    Menu4_NewData --> Menu4_UpdateProcess[Perbarui Nilai Atribut via Setter/]
+    Menu4_UpdateProcess --> Menu4_Msg[\Tampilkan Pesan: Data Berhasil Diupdate/]
+    Menu4_Check -->|Tidak| Menu4_NotFound[\Tampilkan Pesan: ID Tidak Ditemukan/]
+    Menu4_Msg --> ReturnMenu
+    Menu4_NotFound --> ReturnMenu
+
+    %% Cabang Menu 5: Delete
+    MenuDecision -->|5| Menu5_Input[/Input ID Barang yang Ingin Dihapus/]
+    Menu5_Input --> Menu5_Search[Cari Objek Barang berdasarkan ID]
+    Menu5_Search --> Menu5_Check{Barang Ditemukan?}
+    Menu5_Check -->|Ya| Menu5_Confirm[/Input Konfirmasi Penghapusan y/n/]
+    Menu5_Confirm --> Menu5_ConfirmCheck{Konfirmasi 'y'?}
+    Menu5_ConfirmCheck -->|Ya| Menu5_DeleteProcess[Hapus Objek Barang dari ArrayList]
+    Menu5_DeleteProcess --> Menu5_Msg[\Tampilkan Pesan: Barang Berhasil Dihapus/]
+    Menu5_ConfirmCheck -->|Tidak| Menu5_Cancel[\Tampilkan Pesan: Penghapusan Dibatalkan/]
+    Menu5_Check -->|Tidak| Menu5_NotFound[\Tampilkan Pesan: ID Tidak Ditemukan/]
+    Menu5_Msg --> ReturnMenu
+    Menu5_Cancel --> ReturnMenu
+    Menu5_NotFound --> ReturnMenu
+
+    %% Cabang Input Salah
+    MenuDecision -->|Pilihan Invalid| InvalidMsg[\Tampilkan Pesan Error: Pilihan Menu Tidak Valid/]
+    InvalidMsg --> ReturnMenu
+
+    %% Cabang Exit / Selesai
+    MenuDecision -->|6| ExitMsg[\Tampilkan Pesan: Terima Kasih, Program Selesai/]
+    ExitMsg --> EndProgram([End Program])
+
+    %% Penghubung Loop Kembali ke Menu Utama
+    ReturnMenu[ ]
+    ReturnMenu --> DisplayMenu
 ```
 
 1. **Inisialisasi Data (`Read Pre-loaded Data`)** :
