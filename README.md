@@ -81,7 +81,7 @@ Menampung data barang koleksi perhiasan antik dengan atribut spesifik material f
 ```text
 ┌────────────────────────────────────────────────────────┐
 │                   Start Program                        │
-└──────────────────────────┬─────────────────────────────┘
+└──────────────────────────┬─────────────────────────────
                            │
                            v
 ┌────────────────────────────────────────────────────────┐
@@ -113,6 +113,22 @@ Menampung data barang koleksi perhiasan antik dengan atribut spesifik material f
  Menu Utama)                                    │
       ^                                         │
       └─────────────────────────────────────────┘
+```
+```mermaid
+flowchart TD
+    Start([Start Program]) --> LoadData[Load Pre-defined Dummy Data ArrayList]
+    LoadData --> ShowMenu[\Tampilkan Menu Utama<br/>1. Tambah | 2. Tampilkan | 3. Cari<br/>4. Update | 5. Hapus | 6. Keluar/]
+    ShowMenu --> InputMenu[/Input Pilihan Menu / Validator/]
+    
+    InputMenu --> CheckMenu{Pilihan Menu?}
+    
+    CheckMenu -->|Pilihan 1 - 5| ExecFitur[Eksekusi Fitur CRUD]
+    ExecFitur --> ShowMenu
+    
+    CheckMenu -->|Pilihan 6| Selesai([Selesai / Exit Program])
+    
+    CheckMenu -->|Input Salah| ErrMsg[\Pesan Input Salah/]
+    ErrMsg --> ShowMenu
 ```
 
 1. **Inisialisasi Data (`Read Pre-loaded Data`)** :
