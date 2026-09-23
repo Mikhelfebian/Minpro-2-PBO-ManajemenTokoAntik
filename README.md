@@ -34,18 +34,32 @@ Pada versi Mini Project 2 ini, arsitektur sistem telah disempurnakan dengan mene
 
 Sistem mengimplementasikan prinsip *Inheritance* (Pewarisan) dengan `Barang` sebagai *Superclass* serta `BarangAntik` dan `BarangPerhiasan` sebagai *Subclass*.
 
-```text
-               +-----------------------+
-               |     class Barang      |
-               |     (Superclass)      |
-               +-----------------------+
-                   /               \
-                  /                 \
-                 v                   v
-    +-------------------+     +-----------------------+
-    | class BarangAntik |     | class BarangPerhiasan |
-    |   (Subclass 1)    |     |     (Subclass 2)      |
-    +-------------------+     +-----------------------+
+```mermaid
+classDiagram
+    direction BT
+
+    class Barang {
+        <<Superclass>>
+        #int id
+        #String namaBarang
+        #double harga
+        #int stok
+    }
+
+    class BarangAntik {
+        <<Subclass 1>>
+        -String asalNegara
+        -int tahunPembuatan
+    }
+
+    class BarangPerhiasan {
+        <<Subclass 2>>
+        -String material
+        -double beratGram
+    }
+
+    BarangAntik --|> Barang : extends
+    BarangPerhiasan --|> Barang : extends
 ```
 
 #### 3.1 Superclass: `Barang`
@@ -77,43 +91,6 @@ Menampung data barang koleksi perhiasan antik dengan atribut spesifik material f
 ---
 
 ### 4. Alur Kerja Sistem
-
-```text
-┌────────────────────────────────────────────────────────┐
-│                   Start Program                        │
-└──────────────────────────┬─────────────────────────────
-                           │
-                           v
-┌────────────────────────────────────────────────────────┐
-│        Load Pre-defined Dummy Data (ArrayList)         │
-└──────────────────────────┬─────────────────────────────┘
-                           │
-                           v
-┌────────────────────────────────────────────────────────┐
-│                  Tampilkan Menu Utama                  │
-│  1. Tambah  2. Tampilkan  3. Cari  4. Update           │
-│  5. Hapus   6. Keluar                                  │
-└──────────────────────────┬─────────────────────────────┘
-                           │
-                           v
-┌────────────────────────────────────────────────────────┐
-│              Input Pilihan Menu (Validator)            │
-└──────────────────────────┬─────────────────────────────┘
-                           │
-      ┌────────────────────┼────────────────────┐
-      │                    │                    │
-      v                    v                    v
-┌───────────┐        ┌───────────┐        ┌───────────┐
-│ Fitur 1-5 │        │  Menu 6   │        │   Input   │
-│ (Eksekusi)│        │ (Keluar)  │        │   Salah   │
-└─────┬─────┘        └─────┬─────┘        └─────┬─────┘
-      │                    │                    │
-      v                    v                    │
- (Kembali ke           (Selesai)                │
- Menu Utama)                                    │
-      ^                                         │
-      └─────────────────────────────────────────┘
-```
 ```mermaid
 flowchart TD
     %% Inisialisasi
@@ -241,63 +218,24 @@ com.mycompany.tokoantik
 
 ---
 
-### 7. Tangkapan Layar Eksekusi Program (Demo UI)
+### 7. Tangkapan Layar Eksekusi Program
 
 #### 7.1 Tampilan Menu Utama dan Read Data Bawaan
-```text
-===========================================
-    TOKO BARANG ANTIK - MONARCH ANTIQU'E   
-===========================================
-1. Tambah Barang
-2. Tampilkan Semua Barang
-3. Cari Barang berdasarkan ID
-4. Update Barang
-5. Hapus Barang
-6. Keluar
-===========================================
-Pilih menu (1-6) (Contoh: 1): 2
 
-=== DAFTAR BARANG ANTIK & PERHIASAN ===
----------------------------------------------------------------------------------------------------------
-ID   Nama Barang               Jenis           Harga             Stok   | Atribut Khusus      
----------------------------------------------------------------------------------------------------------
-1    Mangkuk Dinasti Ming      Barang Antik    Rp18000000        2      | Asal: Tiongkok     | Tahun: 1430
-2    Cincin Kecubung Antik     Perhiasan       Rp7500000         1      | Mat: Emas 18K      | Berat: 12.5 gram
-3    Patung Singa Guennol      Barang Antik    Rp32000000        1      | Asal: Mesir        | Tahun: 1200
----------------------------------------------------------------------------------------------------------
-```
+<img width="1196" height="437" alt="image" src="https://github.com/user-attachments/assets/578f455d-c68b-4603-b9d3-a3a9fe8352b2" />
 
-#### 7.2 Tambah Data Baru dengan Petunjuk Format Input (UX Hint)
-```text
-=== TAMBAH BARANG ===
-1. Barang Antik Umum
-2. Barang Perhiasan
-Pilih jenis barang (1-2) (Contoh: 1): 1
-Nama barang (Contoh: Vas Bunga Bronze): Vas Bunga Bronze
-Harga Rp (Contoh: 15000000): 12000000
-Stok barang (Contoh: 2): 1
-Asal Negara (Contoh: Yunani): Yunani
-Tahun Pembuatan (Contoh: 1850): 1820
--> Data barang berhasil ditambahkan!
-```
+
+#### 7.2 Tambah Data Baru dengan Petunjuk Format Input
+
+<img width="1145" height="476" alt="image" src="https://github.com/user-attachments/assets/fb4ee61e-5c16-4edf-bdea-2679ea940e28" />
+
 
 #### 7.3 Update Data Barang Spesifik Subclass
-```text
-=== UPDATE BARANG ===
-Masukkan ID barang yang ingin diupdate (Contoh: 1): 1
-Data saat ini: 1    Mangkuk Dinasti Ming      Barang Antik    Rp18000000        2      | Asal: Tiongkok     | Tahun: 1430
-Nama barang baru (Contoh: Mangkuk Dinasti Ming): Mangkuk Dinasti Qing
-Harga baru Rp (Contoh: 18000000.0): 20000000
-Stok baru (Contoh: 2): 1
-Asal negara baru (Contoh: Tiongkok): Tiongkok
-Tahun pembuatan baru (Contoh: 1430): 1644
--> Barang berhasil diupdate.
-```
+
+<img width="1151" height="672" alt="image" src="https://github.com/user-attachments/assets/6c3b441d-e5f7-4756-8fdd-545e56a0bba7" />
+
 
 #### 7.4 Hapus Data Barang
-```text
-=== HAPUS BARANG ===
-Masukkan ID barang yang ingin dihapus (Contoh: 1): 2
-Yakin ingin menghapus 'Cincin Kecubung Antik'? (y/n) (Contoh: y): y
--> Barang berhasil dihapus.
-```
+
+<img width="1152" height="570" alt="image" src="https://github.com/user-attachments/assets/2eef8007-3a45-4ee9-a280-3697a28b8ae3" />
+
